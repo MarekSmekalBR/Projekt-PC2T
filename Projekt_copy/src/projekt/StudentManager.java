@@ -1,75 +1,81 @@
 package projekt;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.FileReader;
-import java.io.BufferedReader;
 
 public class StudentManager {
-    private ArrayList<Student> studenti = new ArrayList<>();
-
-    public void pridejStudenta(Student student) {
-        studenti.add(student);
-    }
-
-    public Student najdiStudenta(int id) {
-        for (Student s : studenti) {
-            if (s.getId() == id) {
-                return s;
-            }
-        }
-        return null;
-    }
-
-    public boolean odeberStudenta(int id) {
-        Student s = najdiStudenta(id);
-        if (s != null) {
-            studenti.remove(s);
-            return true;
-        }
-        return false;
-    }
-
-    public void vypisPodlePrijmeni() {
-        ArrayList<Student> telekomunikace = new ArrayList<>();
-        ArrayList<Student> kyberbezpecnost = new ArrayList<>();
-
-        for (Student s : studenti) {
-            if (s instanceof Telekomunikace) {
-                telekomunikace.add(s);
-            } else if (s instanceof Kyberbezpecnost) {
-                kyberbezpecnost.add(s);
-            }
-        }
-
-        Comparator<Student> podlePrijmeni = Comparator.comparing(Student::getPrijmeni, String.CASE_INSENSITIVE_ORDER);
+	private ArrayList<Student> studenti = new ArrayList<>();
+	
+	public ArrayList<Student> getVsechnyStudenty() {
+	    return new ArrayList<>(studenti);
+	}
+	
+	public void pridejStudenta(Student student) {
+		studenti.add(student);
+	}
+	
+	public Student najdiStudenta(int id) {
+		for (Student s : studenti) {
+			if (s.getId() == id) {
+				return s;
+			}
+		}
+		return null;
+	}
+	
+	public boolean odeberStudenta(int id) {
+		Student s = najdiStudenta(id);
+		if (s != null) {
+			studenti.remove(s);
+			return true;
+		}
+		return false;
+	}
+	
+	public void vypisPodlePrijmeni() {
+		ArrayList<Student> telekomunikace = new ArrayList<>();
+		ArrayList<Student> kyberbezpecnost = new ArrayList<>();
+	
+		for (Student s : studenti) {
+			if (s instanceof Telekomunikace) {
+				telekomunikace.add(s);
+			} else if(s instanceof Kyberbezpecnost) {
+				kyberbezpecnost.add(s);
+			}
+		}
+		
+		Comparator<Student> podlePrijmeni = Comparator.comparing(Student::getPrijmeni, String.CASE_INSENSITIVE_ORDER);
         Collections.sort(telekomunikace, podlePrijmeni);
         Collections.sort(kyberbezpecnost, podlePrijmeni);
-
-        System.out.println("\n--- Telekomunikace ---");
-        if (telekomunikace.isEmpty()) {
-            System.out.println("Zadni studenti");
-        } else {
-            for (Student s : telekomunikace) {
-                System.out.println(s);
-            }
-        }
-
-        System.out.println("\n--- Kyberbezpecnost ---");
-        if (kyberbezpecnost.isEmpty()) {
-            System.out.println("Zadni studenti");
-        } else {
-            for (Student s : kyberbezpecnost) {
-                System.out.println(s);
-            }
-        }
-    }
-
-    public void vypisObecnyStudijnyPrumer() {
+		
+		System.out.println("\n--- Telekomunikace ---");
+		if (telekomunikace.isEmpty()) {
+			System.out.println("Zadni studenti");
+		} else {
+			for (Student s : telekomunikace) {
+				System.out.print(s);
+				System.out.println();
+			}
+		}
+		
+		System.out.println("\n--- Kyberbezpecnost ---");
+		if (kyberbezpecnost.isEmpty()) {
+			System.out.println("Zadni studenti");
+		} else {
+			for (Student s : kyberbezpecnost) {
+				System.out.print(s);
+				System.out.println();
+			}
+		}
+	}
+	
+	public void vypisObecnyStudijnyPrumer() {
         ArrayList<Student> telekomunikace = new ArrayList<>();
         ArrayList<Student> kyberbezpecnost = new ArrayList<>();
 
@@ -103,8 +109,8 @@ public class StudentManager {
             System.out.println("\nŽádní studenti v oboru Kyberbezpecnost.");
         }
     }
-    
-    public void vypisPocetStudentu() {
+	
+	public void vypisPocetStudentu() {
         int pocetTelekomunikace = 0;
         int pocetKyberbezpecnost = 0;
 
@@ -119,79 +125,87 @@ public class StudentManager {
         System.out.println("\nPočet studentů v oboru Telekomunikace: " + pocetTelekomunikace);
         System.out.println("Počet studentů v oboru Kyberbezpecnost: " + pocetKyberbezpecnost);
     }
-    
-    public void ulozStudentaDoSouboru(int id) {
-        Student student = najdiStudenta(id);
-        if (student != null) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("student_" + id + ".txt"))) {
-                writer.write("ID: " + student.getId());
-                writer.newLine();
-                writer.write("Jméno: " + student.getJmeno());
-                writer.newLine();
-                writer.write("Příjmení: " + student.getPrijmeni());
-                writer.newLine();
-                writer.write("Rok narození: " + student.getRokNarozeni());
-                writer.newLine();
-                writer.write("Studijní průměr: " + student.getStudijniPrumer());
-                writer.newLine();
-                writer.write("Obor: " + (student instanceof Telekomunikace ? "Telekomunikace" : "Kyberbezpečnost"));
-                writer.newLine();
-                writer.flush();
-                System.out.println("Student byl úspěšně uložen do souboru.");
-            } catch (IOException e) {
-                System.out.println("Chyba při ukládání studenta do souboru.");
-            }
-        } else {
-            System.out.println("Student s tímto ID nebyl nalezen.");
-        }
-    }
-    
-    public Student nactiStudentaZeSouboru(int id) {
-        Student student = null;
-        try (BufferedReader reader = new BufferedReader(new FileReader("student_" + id + ".txt"))) {
-            String line;
-            String jmeno = "";
-            String prijmeni = "";
-            int rokNarozeni = 0;
-            double studijniPrumer = 0;
-            String obor = "";
+	
+	public static void ulozStudentaDoSouboru(Student student) {
+	    String fileName = "studenti.txt";
 
-            // Čteme řádky ze souboru a získáváme potřebné údaje
-            while ((line = reader.readLine()) != null) {
-                if (line.startsWith("ID: ")) {
-                    // ID studenta ignorujeme, protože je již správně nastaveno
-                    continue;
-                } else if (line.startsWith("Jméno: ")) {
-                    jmeno = line.substring(7);
-                } else if (line.startsWith("Příjmení: ")) {
-                    prijmeni = line.substring(11);
-                } else if (line.startsWith("Rok narození: ")) {
-                    rokNarozeni = Integer.parseInt(line.substring(15));
-                } else if (line.startsWith("Studijní průměr: ")) {
-                    studijniPrumer = Double.parseDouble(line.substring(17));
-                } else if (line.startsWith("Obor: ")) {
-                    obor = line.substring(6);
-                }
-            }
+	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+	        String obor = (student instanceof Telekomunikace) ? "Telekomunikace" : 
+	                      (student instanceof Kyberbezpecnost) ? "Kyberbezpečnost" : "Neznámý";
 
-            // Na základě oboru vytvoříme studenta
-            if (obor.equals("Telekomunikace")) {
-                student = new Telekomunikace(jmeno, prijmeni, rokNarozeni);
-            } else if (obor.equals("Kyberbezpečnost")) {
-                student = new Kyberbezpecnost(jmeno, prijmeni, rokNarozeni);
-            }
+	        String radek = String.format("ID: %d, Jméno: %s, Příjmení: %s, Rok narození: %d, Průměr: %.2f, Obor: %s",
+	                student.getId(),
+	                student.getJmeno(),
+	                student.getPrijmeni(),
+	                student.getRokNarozeni(),
+	                student.getStudijniPrumer(),
+	                obor);
 
-            if (student != null) {
-                // Pokud je studijní průměr a je platný, přidáme známku
-                if (studijniPrumer > 0) {
-                    student.pridaniZnamky((int) studijniPrumer);
-                }
-                // Pokud není studijní průměr (studijniPrumer <= 0), žádná známka nebude přidána
-            }
-        } catch (IOException e) {
-            System.out.println("Chyba při načítání studenta ze souboru.");
-        }
+	        writer.write(radek);
+	        writer.newLine();
 
-        return student;
-    }
+	        System.out.println("Student byl úspěšně uložen do souboru.");
+
+	    } catch (IOException e) {
+	        System.out.println("Chyba při ukládání do souboru: " + e.getMessage());
+	    }
+	}
+	
+	public static void vypisStudentaZeSouboru(int hledaneId) {
+	    String fileName = "studenti.txt";
+
+	    try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+	        String radek;
+	        boolean nalezen = false;
+
+	        while ((radek = reader.readLine()) != null) {
+	            if (radek.startsWith("ID: ")) {
+	                String[] casti = radek.split(", ");
+	                int id = Integer.parseInt(casti[0].split(": ")[1]);
+
+	                if (id == hledaneId) {
+	                    System.out.println(radek);
+	                    nalezen = true;
+	                    break;
+	                }
+	            }
+	        }
+
+	        if (!nalezen) {
+	            System.out.println("Student s ID " + hledaneId + " nebyl nalezen v souboru.");
+	        }
+
+	    } catch (IOException e) {
+	        System.out.println("Chyba při čtení souboru: " + e.getMessage());
+	    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
+	        System.out.println("Chybný formát řádku v souboru.");
+	    }
+	}
+	
+	public void nacistStudentyZDatabaze() {
+	    String url = "jdbc:sqlite:studenti.db";
+	    String sql = "SELECT jmeno, prijmeni, id, vek, obor FROM studenti";
+
+	    try (Connection conn = DriverManager.getConnection(url);
+	         Statement stmt = conn.createStatement();
+	         ResultSet rs = stmt.executeQuery(sql)) {
+
+	        while (rs.next()) {
+	            String jmeno = rs.getString("jmeno");
+	            String prijmeni = rs.getString("prijmeni");
+	            int id = rs.getInt("id");
+	            int vek = rs.getInt("vek");
+	            String obor = rs.getString("obor");
+
+	            Student student = new Student(jmeno, prijmeni, id, vek, obor);
+	            studenti.add(student); // předpokládám, že máš list "studenti"
+	        }
+
+	        System.out.println("Data byla úspěšně načtena z databáze.");
+
+	    } catch (SQLException e) {
+	        System.out.println("Chyba při načítání dat z databáze: " + e.getMessage());
+	    }
+	}
+
 }

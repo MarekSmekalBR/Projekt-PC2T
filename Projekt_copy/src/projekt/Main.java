@@ -9,6 +9,10 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		StudentManager manager = new StudentManager();
 	
+		DatabaseHelper.inicializujDatabazi();
+		DatabaseHelper.nacistStudentyZDatabaze(manager);
+
+		System.out.println("Počet studentů po načtení z DB: " + manager.getVsechnyStudenty().size());
 		
 		boolean bez = true;
 		while(bez)  {
@@ -21,8 +25,8 @@ public class Main {
 	            System.out.println("6 - Vypis vsech studentu v jednotlivych skupinach");
 	            System.out.println("7 - Vypis obecneho studijního prumeru v oborech");
 	            System.out.println("8 - Vypis poctu studentu v jednotlivych skupinach");
-	            System.out.println("9 - Uložit studenta do souboru");
-	            System.out.println("10 - Načíst studenta ze souboru");
+	            System.out.println("9 - Ulozeni studenta do souboru");
+	            System.out.println("10 - Nacteni studenta ze souboru");
 	            System.out.println("0 - Konec");
 	            System.out.print("Vyber možnost: ");
 	            String volba = scanner.nextLine();
@@ -30,16 +34,16 @@ public class Main {
 	            
 	            switch (volba) {
                 case "1":
-                    System.out.print("Zadej jmeno: ");
+                    System.out.print("Zadej jméno: ");
                     String jmeno = scanner.nextLine();
-                    System.out.print("Zadej prijmeni: ");
+                    System.out.print("Zadej příjmení: ");
                     String prijmeni = scanner.nextLine();
-                    System.out.print("Zadej rok narozeni: ");
+                    System.out.print("Zadej rok narození: ");
                     int rok = Integer.parseInt(scanner.nextLine());
 
                     System.out.println("Vyber obor:");
                     System.out.println("1 - Telekomunikace");
-                    System.out.println("2 - Kyberbezpecnost");
+                    System.out.println("2 - Kyberbezpečnost");
                     String obor = scanner.nextLine();
 
                     Student novy;
@@ -48,12 +52,12 @@ public class Main {
                     } else if (obor.equals("2")) {
                         novy = new Kyberbezpecnost(jmeno, prijmeni, rok);
                     } else {
-                        System.out.println("Neplatny obor.");
+                        System.out.println("Neplatný obor.");
                         break;
                     }
                     
                     manager.pridejStudenta(novy);
-                    System.out.println("Student pridan.");
+                    System.out.println("Student přidán.");
                     break;
                     
                 case "2":
@@ -62,11 +66,11 @@ public class Main {
                     Student studentZ = manager.najdiStudenta(idZnamka);
                     
                     if (studentZ != null) {
-                        System.out.print("Zadej znamku (1–5): ");
+                        System.out.print("Zadej známku (1–5): ");
                         int znamka = Integer.parseInt(scanner.nextLine());
                         studentZ.pridaniZnamky(znamka);
                     } else {
-                        System.out.println("Student s timto ID nebyl nalezen.");
+                        System.out.println("Student s tímto ID nebyl nalezen.");
                     }
                     break;
                     
@@ -89,7 +93,7 @@ public class Main {
                 	    if (nalezeny != null) {
                 	        System.out.println(nalezeny);  
                 	    } else {
-                	        System.out.println("Student s timto ID neexistuje.");
+                	        System.out.println("Student s tímto ID neexistuje.");
                 	    }
                     break;
                     
@@ -100,39 +104,40 @@ public class Main {
                     if (studentD != null) {
                         studentD.provedDovednost();
                     } else {
-                        System.out.println("Student s timto ID nebyl nalezen.");
+                        System.out.println("Student s tímto ID nebyl nalezen.");
                     }
                 	break;
                 	
                 case "6" :
                 	manager.vypisPodlePrijmeni();
                 	break;
-               
+                	
                 case "7":
                     manager.vypisObecnyStudijnyPrumer();
                     break;
-                
+                  
                 case "8":
                     manager.vypisPocetStudentu();
                     break;
                     
                 case "9":
-                    System.out.print("Zadej ID studenta pro uložení do souboru: ");
+                	System.out.print("Zadej ID studenta, kterého chceš uložit do souboru: ");
                     int idUlozit = Integer.parseInt(scanner.nextLine());
-                    manager.ulozStudentaDoSouboru(idUlozit);
-                    break;
-                
-                case "10":
-                    System.out.print("Zadej ID studenta pro načtení ze souboru: ");
-                    int idNacist = Integer.parseInt(scanner.nextLine());
-                    Student studentNacteny = manager.nactiStudentaZeSouboru(idNacist);
-                    if (studentNacteny != null) {
-                        System.out.println(studentNacteny);
+                    Student studentUlozit = manager.najdiStudenta(idUlozit);
+                    if (studentUlozit != null) {
+                        StudentManager.ulozStudentaDoSouboru(studentUlozit);
                     } else {
-                        System.out.println("Student s tímto ID neexistuje nebo došlo k chybě při načítání.");
+                        System.out.println("Student s tímto ID nebyl nalezen.");
                     }
                     break;
+                           
                     
+                case "10":
+                	System.out.print("Zadej ID studenta, kterého chceš vypsat ze souboru: ");
+                    int idZeSouboru = Integer.parseInt(scanner.nextLine());
+                    StudentManager.vypisStudentaZeSouboru(idZeSouboru);
+                	break;
+                	       	
                 case "0":
                     bez = false;
                     System.out.println("Program ukoncen");
@@ -144,6 +149,10 @@ public class Main {
 	            }
 	            
 		}
+		
+		DatabaseHelper.ulozVsechnyStudenty(manager);
+		System.out.println("Data byla uložena do databáze.");
+		
 		scanner.close();
 	}
 }
