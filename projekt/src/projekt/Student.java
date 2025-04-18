@@ -9,6 +9,7 @@ abstract class Student {
 	private String prijmeni;
 	private int rokNarozeni;
 	private ArrayList<Integer> znamky = new ArrayList<>(); 				//uchování seznam známek
+	private double StudijniPrumer;
 	
 	public Student(String jmeno, String prijmeni, int rokNarozeni) {
 		this.id= nextId++; 												//zajisteni unikatniho id
@@ -20,7 +21,23 @@ abstract class Student {
 	public int getId() {
 		return id;
 	}
+	
+	public void setId(int id) {
+	    this.id = id;
+	}
+	
+	public ArrayList<Integer> getZnamky() {
+	    return znamky;
+	}
 
+	public void setStudijniPrumer(double prumer) {
+	    this.StudijniPrumer = prumer;
+	}
+
+	public double getStudijniPrumer() {
+	    return this.StudijniPrumer;
+	}
+	
 	public String getJmeno() {
 		return jmeno;
 	}
@@ -48,20 +65,21 @@ abstract class Student {
 	public void pridaniZnamky(int znamka) {	
 		if (znamka > 0 && znamka < 6) {
 			znamky.add(znamka);
+			spocitejStudijniPrumer();
 		} else {
 			System.out.println("Zadejte znamku spravne");
 		}
 	}
 	
-	public double getStudijniPrumer() {									 //Vypocet prumeru
+	public void spocitejStudijniPrumer() {									 //Vypocet prumeru
 		if (znamky.isEmpty()) {
-			return 0.0;			
+			StudijniPrumer = 0.0;			
 		}	
 		int suma = 0;
 		for (int z : znamky) {
 			suma += z;
 		}
-		return (double) suma/znamky.size();
+		StudijniPrumer = (double) suma/znamky.size();
 	}
 	
 	public abstract void provedDovednost();								//dovednost (Morseovka a Hash)
