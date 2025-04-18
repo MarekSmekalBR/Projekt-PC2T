@@ -1,5 +1,6 @@
 package projekt;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -9,6 +10,10 @@ public class Main {
 		Scanner scanner = new Scanner(System.in);
 		StudentManager manager = new StudentManager();
 	
+		List<Student> nacteni = DatabaseManager.nactiStudentyZDatabaze();
+		for (Student s : nacteni) {
+		    manager.pridejStudenta(s);
+		}
 		
 		boolean bez = true;
 		while(bez)  {
@@ -24,22 +29,22 @@ public class Main {
 	            System.out.println("9 - Ulozeni studenta do souboru");
 	            System.out.println("10 - Nacteni studenta ze souboru");
 	            System.out.println("0 - Konec");
-	            System.out.print("Vyber možnost: ");
+	            System.out.print("Vyber moznost: ");
 	            String volba = scanner.nextLine();
 	            
 	            
 	            switch (volba) {
                 case "1":
-                    System.out.print("Zadej jméno: ");
+                    System.out.print("Zadej jmeno: ");
                     String jmeno = scanner.nextLine();
-                    System.out.print("Zadej příjmení: ");
+                    System.out.print("Zadej prijmeni: ");
                     String prijmeni = scanner.nextLine();
-                    System.out.print("Zadej rok narození: ");
+                    System.out.print("Zadej rok narozeni: ");
                     int rok = Integer.parseInt(scanner.nextLine());
 
                     System.out.println("Vyber obor:");
                     System.out.println("1 - Telekomunikace");
-                    System.out.println("2 - Kyberbezpečnost");
+                    System.out.println("2 - Kyberbezpecnost");
                     String obor = scanner.nextLine();
 
                     Student novy;
@@ -48,12 +53,12 @@ public class Main {
                     } else if (obor.equals("2")) {
                         novy = new Kyberbezpecnost(jmeno, prijmeni, rok);
                     } else {
-                        System.out.println("Neplatný obor.");
+                        System.out.println("Neplatny obor.");
                         break;
                     }
                     
                     manager.pridejStudenta(novy);
-                    System.out.println("Student přidán.");
+                    System.out.println("Student pridan.");
                     break;
                     
                 case "2":
@@ -62,11 +67,11 @@ public class Main {
                     Student studentZ = manager.najdiStudenta(idZnamka);
                     
                     if (studentZ != null) {
-                        System.out.print("Zadej známku (1–5): ");
+                        System.out.print("Zadej znamku (1–5): ");
                         int znamka = Integer.parseInt(scanner.nextLine());
                         studentZ.pridaniZnamky(znamka);
                     } else {
-                        System.out.println("Student s tímto ID nebyl nalezen.");
+                        System.out.println("Student s timto ID nebyl nalezen.");
                     }
                     break;
                     
@@ -89,7 +94,7 @@ public class Main {
                 	    if (nalezeny != null) {
                 	        System.out.println(nalezeny);  
                 	    } else {
-                	        System.out.println("Student s tímto ID neexistuje.");
+                	        System.out.println("Student s timto ID neexistuje.");
                 	    }
                     break;
                     
@@ -100,7 +105,7 @@ public class Main {
                     if (studentD != null) {
                         studentD.provedDovednost();
                     } else {
-                        System.out.println("Student s tímto ID nebyl nalezen.");
+                        System.out.println("Student s timto ID nebyl nalezen.");
                     }
                 	break;
                 	
@@ -117,7 +122,7 @@ public class Main {
                     break;
                     
                 case "9":
-                	System.out.print("Zadej ID studenta, kterého chceš uložit do souboru: ");
+                	System.out.print("Zadej ID studenta, ktereho chces ulozit do souboru: ");
                     int idUlozit = Integer.parseInt(scanner.nextLine());
                     Student studentUlozit = manager.najdiStudenta(idUlozit);
                     if (studentUlozit != null) {
@@ -129,14 +134,16 @@ public class Main {
                            
                     
                 case "10":
-                	System.out.print("Zadej ID studenta, kterého chceš vypsat ze souboru: ");
+                	System.out.print("Zadej ID studenta, ktereho chces vypsat ze souboru: ");
                     int idZeSouboru = Integer.parseInt(scanner.nextLine());
                     StudentManager.vypisStudentaZeSouboru(idZeSouboru);
                 	break;
                 	       	
                 case "0":
+                	System.out.println("Ukladam data do databaze...");
+                    DatabaseManager.ulozStudentyDoDatabaze(manager.getStudenti());
+                    System.out.println("Na shledanou!");
                     bez = false;
-                    System.out.println("Program ukoncen");
                     break;
 
                 default:
