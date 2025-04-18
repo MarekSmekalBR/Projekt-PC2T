@@ -12,6 +12,10 @@ import java.util.Comparator;
 public class StudentManager {
 	private ArrayList<Student> studenti = new ArrayList<>();
 	
+	public ArrayList<Student> getStudenti() {
+	    return studenti;
+	}
+	
 	public void pridejStudenta(Student student) {
 		studenti.add(student);
 	}
@@ -89,9 +93,9 @@ public class StudentManager {
                 sumaTelekomunikace += s.getStudijniPrumer();
             }
             double prumerTelekomunikace = sumaTelekomunikace / telekomunikace.size();
-            System.out.println("\nPrumerny studijní prumer pro Telekomunikace: " + prumerTelekomunikace);
+            System.out.println("\nPrumerny studijni prumer pro Telekomunikace: " + prumerTelekomunikace);
         } else {
-            System.out.println("\nŽádní studenti v oboru Telekomunikace.");
+            System.out.println("\nZadni studenti v oboru Telekomunikace.");
         }
 
         if (!kyberbezpecnost.isEmpty()) {
@@ -100,9 +104,9 @@ public class StudentManager {
                 sumaKyberbezpecnost += s.getStudijniPrumer();
             }
             double prumerKyberbezpecnost = sumaKyberbezpecnost / kyberbezpecnost.size();
-            System.out.println("\nPrumerny studijní prumer pro Kyberbezpecnost: " + prumerKyberbezpecnost);
+            System.out.println("\nPrumerny studijni prumer pro Kyberbezpecnost: " + prumerKyberbezpecnost);
         } else {
-            System.out.println("\nŽádní studenti v oboru Kyberbezpecnost.");
+            System.out.println("\nZadni studenti v oboru Kyberbezpecnost.");
         }
     }
 	
@@ -118,8 +122,8 @@ public class StudentManager {
             }
         }
 
-        System.out.println("\nPočet studentů v oboru Telekomunikace: " + pocetTelekomunikace);
-        System.out.println("Počet studentů v oboru Kyberbezpecnost: " + pocetKyberbezpecnost);
+        System.out.println("\nPocet studentu v oboru Telekomunikace: " + pocetTelekomunikace);
+        System.out.println("Pocet studentu v oboru Kyberbezpecnost: " + pocetKyberbezpecnost);
     }
 	
 	public static void ulozStudentaDoSouboru(Student student) {
@@ -127,9 +131,9 @@ public class StudentManager {
 
 	    try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
 	        String obor = (student instanceof Telekomunikace) ? "Telekomunikace" : 
-	                      (student instanceof Kyberbezpecnost) ? "Kyberbezpečnost" : "Neznámý";
+	                      (student instanceof Kyberbezpecnost) ? "Kyberbezpecnost" : "Neznamy";
 
-	        String radek = String.format("ID: %d, Jméno: %s, Příjmení: %s, Rok narození: %d, Průměr: %.2f, Obor: %s",
+	        String radek = String.format("ID: %d, Jmeno: %s, Prijmeni: %s, Rok narozeni: %d, Prumer: %.2f, Obor: %s",
 	                student.getId(),
 	                student.getJmeno(),
 	                student.getPrijmeni(),
@@ -140,10 +144,10 @@ public class StudentManager {
 	        writer.write(radek);
 	        writer.newLine();
 
-	        System.out.println("Student byl úspěšně uložen do souboru.");
+	        System.out.println("Student byl uspesne ulozen do souboru.");
 
 	    } catch (IOException e) {
-	        System.out.println("Chyba při ukládání do souboru: " + e.getMessage());
+	        System.out.println("Chyba pri ukladani do souboru: " + e.getMessage());
 	    }
 	}
 	
@@ -172,9 +176,9 @@ public class StudentManager {
 	        }
 
 	    } catch (IOException e) {
-	        System.out.println("Chyba při čtení souboru: " + e.getMessage());
+	        System.out.println("Chyba pri cteni souboru: " + e.getMessage());
 	    } catch (NumberFormatException | ArrayIndexOutOfBoundsException e) {
-	        System.out.println("Chybný formát řádku v souboru.");
+	        System.out.println("Chybný format radku v souboru.");
 	    }
 	}
 }
